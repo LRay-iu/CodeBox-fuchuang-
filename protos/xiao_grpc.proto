@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option go_package = "Xiao_Middleware/grpc";
+
+package grpc;
+
+import "google/protobuf/timestamp.proto";
+
+service XiaoGRPC {
+  rpc AddRecord (Record) returns (OperationReply) {}
+  rpc UpdateRecord (Record) returns (OperationReply) {}
+  rpc DeleteRecord (ID) returns (OperationReply) {}
+  rpc GetRecord (ID) returns (RecordReploy) {}
+  rpc GetRecords (ID) returns (RecordsReploy) {}
+
+  rpc RecognizeReceipt(ImgFile) returns (ReceiptReply) {} 
+}
+
+// 流水记录请求
+message Record {
+  float amount = 1;
+  string category_id = 2;
+  string account_id = 3;
+  google.protobuf.Timestamp timestamp = 4;
+  string note = 5;
+}
+
+// 单个流水记录回应
+message RecordReploy {
+  string code = 1;
+  Record records = 2;
+}
+
+// 流水记录列表回应
+message RecordsReploy {
+  string code = 1;
+  repeated Record records = 2;
+}
+
+// 单据
+message Receipt {
+  double amount = 1;
+  string shop_name = 2;
+  string datetime = 3;
+  string note = 4;
+}
+
+// 单据信息回应
+message ReceiptReply  {
+  int32 code = 1;
+  Receipt receipt = 2;
+}
+
+// ID
+message ID {
+  string id = 1;
+}
+
+// ImgFile
+message ImgFile {
+  bytes content = 1;
+}
+
+// 操作回应
+message OperationReply {
+  string code = 1;
+  string msg = 2;
+}
