@@ -6,8 +6,8 @@ import 'package:xiao_tally/api/textin/receipt.dart';
 import 'package:xiao_tally/components/common/page.dart';
 import 'package:xiao_tally/components/input/textfield.dart';
 import 'package:xiao_tally/config/theme.dart';
-import 'package:xiao_tally/src/generated/google/protobuf/timestamp.pb.dart';
-import 'package:xiao_tally/src/generated/xiao_grpc.pb.dart';
+//import 'package:xiao_tally/src/generated/google/protobuf/timestamp.pb.dart';
+//import 'package:xiao_tally/src/generated/xiao_grpc.pb.dart';
 
 class AddPage extends StatefulWidget {
   const AddPage({super.key, required this.title});
@@ -28,7 +28,12 @@ class _AddPageState extends State<AddPage> {
   // 消费备注
   String remark = '';
 
-  Record record = Record();
+  //Record record = Record();
+  int _nextRecordId = 1;
+
+  int getNextRecordId() {
+    return _nextRecordId++;
+  }
 
 //测试
   final List<String> categoryList = [
@@ -169,27 +174,26 @@ class _AddPageState extends State<AddPage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {
-            if (_formKey.currentState!.validate())
-              {
-                print(_formKey.currentState),
-                //获取表单内容
-                _formKey.currentState!.save(),
-
-                print(selectedValue),
-                print(amountFieldController.text),
-                print(categoryFieldController.text),
-                print(dateFieldController.text),
-                print(remarkFieldController.text),
-                record = Record(
-                  amount: double.parse(amountFieldController.text),
-                  categoryId: categoryFieldController.text,
-                  timestamp: Timestamp.fromDateTime(DateTime.now()),
-                  note: remarkFieldController.text,
-                ),
-                print(record),
-                addRecord(record),
-              },
+          onPressed: () {
+            if (_formKey.currentState!.validate()) {
+              String usetime =DateTime.now().toString();
+              _formKey.currentState!.save();
+              //print(amountFieldController.text);
+             // print(categoryFieldController.text);
+             // print(dateFieldController.text);
+              //print(remarkFieldController.text);
+              int id = getNextRecordId();
+              Record value = Record(
+                id: id,
+                amount: double.parse(amountFieldController.text),
+                category: categoryFieldController.text,
+                usetime: usetime,
+                note: remarkFieldController.text,
+              );
+              RecordEdit(value,'add');
+              //print(record);
+              //addRecord(record);
+            }
           },
           backgroundColor: FlutterFlowTheme.of(context).primaryColor,
           child: const Icon(Ionicons.checkmark),
